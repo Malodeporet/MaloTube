@@ -140,6 +140,7 @@ const Upload = ({ setOpen }) => {
     setOpen(false);
     res.status === 200 && navigate(`/video/${res.data._id}`);
   };
+  console.log(inputs);
 
   return (
     <Container>

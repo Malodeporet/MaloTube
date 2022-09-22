@@ -17,12 +17,15 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
+
 const Container = styled.div`
   flex: 1;
   background-color: ${({ theme }) => theme.bgLighter};
-  height: 100vh;
+  height: 115vh;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
   position: sticky;
@@ -82,8 +85,17 @@ const Title = styled.h2`
   margin-bottom: 20px;
 `;
 
+//TODO: TAGS FUNCTIONALITY
+
 const Menu = ({ darkMode, setDarkMode }) => {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
 
   return (
     <Container>
@@ -93,11 +105,11 @@ const Menu = ({ darkMode, setDarkMode }) => {
             <Img src={MaloTube} />
             MaloTube
           </Logo>
+          <Item>
+            <HomeIcon />
+            Home
+          </Item>
         </Link>
-        <Item>
-          <HomeIcon />
-          Home
-        </Item>
         <Link to="trends" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <ExploreOutlinedIcon />
@@ -138,26 +150,51 @@ const Menu = ({ darkMode, setDarkMode }) => {
           </>
         )}
         <Title>BEST OF MALOTUBE</Title>
-        <Item>
-          <LibraryMusicOutlinedIcon />
-          Music
-        </Item>
-        <Item>
-          <SportsBasketballOutlinedIcon />
-          Sports
-        </Item>
-        <Item>
-          <SportsEsportsOutlinedIcon />
-          Gaming
-        </Item>
-        <Item>
-          <MovieOutlinedIcon />
-          Movies
-        </Item>
-        <Item>
-          <ArticleOutlinedIcon />
-          News
-        </Item>
+        <Link
+          to="/tags?tags=music"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <LibraryMusicOutlinedIcon />
+            Music
+          </Item>
+        </Link>
+        <Link
+          to="/tags?tags=sports"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <SportsBasketballOutlinedIcon />
+            Sports
+          </Item>
+        </Link>
+        <Link
+          to="/tags?tags=gaming"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <SportsEsportsOutlinedIcon />
+            Gaming
+          </Item>
+        </Link>
+        <Link
+          to="/tags?tags=movies"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <MovieOutlinedIcon />
+            Movies
+          </Item>
+        </Link>
+        <Link
+          to="/tags?tags=news"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <ArticleOutlinedIcon />
+            News
+          </Item>
+        </Link>
         <Item>
           <LiveTvOutlinedIcon />
           Live
@@ -179,6 +216,12 @@ const Menu = ({ darkMode, setDarkMode }) => {
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
+        {currentUser && (
+          <Item onClick={handleLogout}>
+            <LogoutOutlinedIcon />
+            Logout
+          </Item>
+        )}
       </Wrapper>
     </Container>
   );

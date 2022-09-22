@@ -5,11 +5,11 @@ import styled from "styled-components";
 import { format } from "timeago.js";
 
 const Container = styled.div`
-  width: ${(props) => props.type !== "sm" && "360px"};
+  width: ${(props) => props.type !== "sm" && "320px"};
   margin-bottom: ${(props) => (props.type === "sm" ? "10px" : "45px")};
   cursor: pointer;
   display: ${(props) => props.type === "sm" && "flex"};
-  gap: 10px;
+  gap: 50px;
 `;
 
 const Image = styled.img`
@@ -67,9 +67,9 @@ const Card = ({ type, video }) => {
   return (
     <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
       <Container type={type}>
-        <Image type={type} src={video.imgUrl} />
+        <Image type={type} src={video.imgUrl} alt="video img" />
         <Details type={type}>
-          <ChannelImage type={type} src={channel.img} />
+          <ChannelImage type={type} src={channel.img} alt="channel img" />
           <Texts>
             <Title>{video.title}</Title>
             <ChannelName>{channel.name}</ChannelName>

@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
 const Container = styled.div`
   display: flex;
@@ -36,8 +38,21 @@ const Text = styled.span`
   font-size: 14px;
 `;
 
+const Boutton = styled.button`
+  background-color: inherit;
+  font-weight: 100;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  height: max-content;
+  vertical-align: center;
+  cursor: pointer;
+  margin-left: 50px;
+`;
+
 const Comment = ({ comment }) => {
   const [channel, setChannel] = useState({});
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchComment = async () => {
@@ -47,15 +62,28 @@ const Comment = ({ comment }) => {
     fetchComment();
   }, [comment.userId]);
 
+  const deleteComment = async () => {
+    await axios.delete(`/comments/${comment._id}`);
+    console.log("commentaire effacé");
+  };
+
   return (
     <Container>
-      <Avatar src={channel.img} />
+      <Avatar src={channel?.img} />
       <Details>
         <Name>
-          {channel.name} <Date>1 day ago</Date>
+          {channel?.name} <Date>1 day ago</Date>
         </Name>
-        <Text>{comment.desc}</Text>
+        <Text>{comment?.desc}</Text>
       </Details>
+      {comment?.userId === currentUser?._id ? (
+        <Boutton onClick={deleteComment}>
+          {" "}
+          <DeleteForeverOutlinedIcon />
+        </Boutton>
+      ) : (
+        ""
+      )}
     </Container>
   );
 };

@@ -9,6 +9,7 @@ import Video from "./pages/Video";
 import SignIn from "./pages/SignIn";
 import Search from "./pages/Search";
 import { useSelector } from "react-redux";
+import Tags from "./pages/Tags";
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const Main = styled.div`
   background-color: ${({ theme }) => theme.bg};
 `;
 const Wrapper = styled.div`
-  padding: 22px 96px;
+  padding: 22px 35px;
 `;
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
                   <Route path="trends" element={<Home type="trend" />} />
                   <Route path="subscriptions" element={<Home type="sub" />} />
                   <Route path="search" element={<Search />} />
+                  <Route path="tags" element={<Tags />} />
                   <Route
                     path="signin"
                     element={currentUser ? <Home /> : <SignIn />}
@@ -47,6 +49,7 @@ function App() {
                   <Route path="video">
                     <Route path=":id" element={<Video />} />
                   </Route>
+
                 </Route>
               </Routes>
             </Wrapper>
