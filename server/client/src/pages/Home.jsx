@@ -1,34 +1,33 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Card from "../components/Card";
+import { axiosInstance } from "../config";
 
 const Container = styled.div`
   display: flex;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 5px;
 `;
 
-const Tags = () => {
+const Home = ({ type }) => {
   const [videos, setVideos] = useState([]);
-  const tags = useLocation().search;
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const res = await axios.get(`/videos/tags/${tags}`);
+      const res = await axiosInstance.get(`/videos/${type}`);
       setVideos(res.data);
     };
     fetchVideos();
-  }, [tags]);
+  }, [type]);
 
   return (
     <Container>
-      {videos.map((video) => (
-        <Card key={video._id} video={video} />
-      ))}
+      {Array.isArray(videos)
+        ? videos.map((video) => <Card key={video?._id} video={video} />)
+        : null}
     </Container>
   );
 };
 
-export default Tags;
+export default Home;

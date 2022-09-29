@@ -1,6 +1,7 @@
-import axios from "axios";
+import { axiosInstance } from "../config";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCommentSuccess } from "../redux/commentSlice";
 import styled from "styled-components";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
@@ -54,17 +55,21 @@ const Comment = ({ comment }) => {
   const [channel, setChannel] = useState({});
   const { currentUser } = useSelector((state) => state.user);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchComment = async () => {
-      const res = await axios.get(`/users/find/${comment.userId}`);
+      const res = await axiosInstance.get(`/users/find/${comment.userId}`);
       setChannel(res.data);
     };
     fetchComment();
   }, [comment.userId]);
 
   const deleteComment = async () => {
-    await axios.delete(`/comments/${comment._id}`);
+    await axiosInstance.delete(`/comments/${comment._id}`);
     console.log("commentaire effacé");
+    dispatch(deleteCommentSuccess(comment._id));
+    console.log(comment._id);
   };
 
   return (

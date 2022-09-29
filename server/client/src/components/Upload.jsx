@@ -7,7 +7,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import app from "../firebase";
-import axios from "axios";
+import { axiosInstance } from "../config";
 import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
@@ -88,6 +88,7 @@ const Upload = ({ setOpen }) => {
 
   const handleTags = (e) => {
     setTags(e.target.value.split(","));
+    console.log("works");
   };
 
   const uploadFile = (file, urlType) => {
@@ -136,11 +137,12 @@ const Upload = ({ setOpen }) => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    const res = await axios.post("/videos", { ...inputs, tags });
+    const res = await axiosInstance.post("/videos", { ...inputs, tags });
     setOpen(false);
     res.status === 200 && navigate(`/video/${res.data._id}`);
   };
   console.log(inputs);
+  console.log(tags);
 
   return (
     <Container>
@@ -171,8 +173,8 @@ const Upload = ({ setOpen }) => {
         />
         <Input
           type="text"
-          placeholder="Separate the tags with commas."
-          onChance={handleTags}
+          placeholder="Tags (separate the tags with commas)"
+          onChange={handleTags}
         />
         <Label>Image:</Label>
         {imgPerc > 0 ? (

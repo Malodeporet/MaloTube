@@ -21,10 +21,14 @@ export const commentSlice = createSlice({
             state.loading = false;
             state.error = true;
         },
+        deleteCommentSuccess: (state) => {
+            state.loading = false;
+            state.currentComment = null;
+        },
     },
 });
 
-export const { fetchCommentStart, fetchCommentSuccess, fetchCommentFailure } =
+export const { fetchCommentStart, fetchCommentSuccess, fetchCommentFailure, deleteCommentSuccess } =
     commentSlice.actions;
 
 export default commentSlice.reducer;

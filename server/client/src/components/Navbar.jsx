@@ -39,6 +39,7 @@ const Search = styled.div`
 `;
 
 const Input = styled.input`
+  width: 100%;
   border: none;
   background-color: transparent;
   outline: none;
@@ -79,6 +80,11 @@ const Navbar = () => {
   const [q, setQ] = useState("");
   const { currentUser } = useSelector((state) => state.user);
 
+  const searchInput = () => {
+    navigate(`/search?q=${q}`);
+    setQ("");
+  };
+
   return (
     <>
       <Container>
@@ -87,8 +93,9 @@ const Navbar = () => {
             <Input
               placeholder="Search"
               onChange={(e) => setQ(e.target.value)}
+              value={q}
             />
-            <SearchOutlinedIcon onClick={() => navigate(`/search?q=${q}`)} />
+            <SearchOutlinedIcon onClick={searchInput} />
           </Search>
           {currentUser ? (
             <User>

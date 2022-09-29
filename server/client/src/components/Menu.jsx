@@ -14,7 +14,6 @@ import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -25,14 +24,15 @@ import { logout } from "../redux/userSlice";
 const Container = styled.div`
   flex: 1;
   background-color: ${({ theme }) => theme.bgLighter};
-  height: 115vh;
+  height: 100%;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
   position: sticky;
   top: 0;
 `;
 const Wrapper = styled.div`
-  padding: 18px 26px;
+  padding: 18px 15px;
+  height: 100vh;
 `;
 const Logo = styled.div`
   display: flex;
@@ -85,8 +85,6 @@ const Title = styled.h2`
   margin-bottom: 20px;
 `;
 
-//TODO: TAGS FUNCTIONALITY
-
 const Menu = ({ darkMode, setDarkMode }) => {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -102,7 +100,7 @@ const Menu = ({ darkMode, setDarkMode }) => {
       <Wrapper>
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Logo>
-            <Img src={MaloTube} />
+            <Img src={MaloTube} alt="img Malotube" />
             MaloTube
           </Logo>
           <Item>
@@ -200,18 +198,21 @@ const Menu = ({ darkMode, setDarkMode }) => {
           Live
         </Item>
         <Hr />
-        <Item>
-          <SettingsOutlinedIcon />
-          Settings
-        </Item>
-        <Item>
-          <FlagOutlinedIcon />
-          Report
-        </Item>
-        <Item>
-          <HelpOutlineOutlinedIcon />
-          Help
-        </Item>
+        <Link
+          to="settings"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <SettingsOutlinedIcon />
+            Settings
+          </Item>
+        </Link>
+        <Link to="help" style={{ textDecoration: "none", color: "inherit" }}>
+          <Item>
+            <HelpOutlineOutlinedIcon />
+            About
+          </Item>
+        </Link>
         <Item onClick={() => setDarkMode(!darkMode)}>
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode

@@ -10,7 +10,7 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import Comments from "../components/Comments";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../config";
 import { dislike, fetchSuccess, like } from "../redux/videoSlice";
 import { format } from "timeago.js";
 import { subscription } from "../redux/userSlice";
@@ -18,7 +18,7 @@ import Recommendation from "../components/Recommendation";
 
 const Container = styled.div`
   display: flex;
-  gap: 24px;
+  gap: 10px;
 `;
 
 const Content = styled.div`
@@ -128,8 +128,8 @@ const Video = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const videoRes = await axios.get(`/videos/find/${path}`);
-        const channelRes = await axios.get(
+        const videoRes = await axiosInstance.get(`/videos/find/${path}`);
+        const channelRes = await axiosInstance.get(
           `/users/find/${videoRes.data.userId}`
         );
         setChannel(channelRes.data);
@@ -140,24 +140,29 @@ const Video = () => {
   }, [path, dispatch]);
 
   const handleLike = async () => {
-    await axios.put(`/users/like/${currentVideo._id}`);
+    await axiosInstance.put(`/users/like/${currentVideo._id}`);
     dispatch(like(currentUser._id));
   };
   const handleDislike = async () => {
-    await axios.put(`/users/dislike/${currentVideo._id}`);
+    await axiosInstance.put(`/users/dislike/${currentVideo._id}`);
     dispatch(dislike(currentUser._id));
   };
 
   const handleSub = async () => {
     currentUser.subscribedUsers.includes(channel._id)
-      ? await axios.put(`/users/unsub/${channel._id}`)
-      : await axios.put(`/users/sub/${channel._id}`);
+      ? await axiosInstance.put(`/users/unsub/${channel._id}`)
+      : await axiosInstance.put(`/users/sub/${channel._id}`);
     dispatch(subscription(channel._id));
   };
 
   const deleteVideo = async () => {
-    await axios.delete(`/videos/${currentVideo._id}`);
+    await axiosInstance.delete(`/videos/${currentVideo._id}`);
     navigate("/");
+  };
+
+  const copy = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    alert("Link copied");
   };
 
   return (
@@ -188,15 +193,19 @@ const Video = () => {
               )}{" "}
               Dislike
             </Button>
-            <Button>
+            <Button onClick={copy}>
               <ReplyOutlinedIcon /> Share
             </Button>
             <Button>
               <AddTaskOutlinedIcon /> Save
             </Button>
-            <Button onClick={deleteVideo}>
-              <DeleteForeverOutlinedIcon /> Delete
-            </Button>
+            {currentVideo?.userId === currentUser?._id ? (
+              <Button onClick={deleteVideo}>
+                <DeleteForeverOutlinedIcon /> Delete
+              </Button>
+            ) : (
+              ""
+            )}
           </Buttons>
         </Details>
         <Hr />

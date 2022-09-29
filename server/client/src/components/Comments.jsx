@@ -1,10 +1,13 @@
-import axios from "axios";
+import { axiosInstance } from "../config";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Comment from "./Comment";
-import { fetchCommentSuccess } from "../redux/commentSlice";
-import SelectInput from "@mui/material/Select/SelectInput";
+import {
+  fetchCommentStart,
+  fetchCommentSuccess,
+  fetchCommentFailure,
+} from "../redux/commentSlice";
 
 const Container = styled.div``;
 
@@ -40,6 +43,8 @@ const Boutton = styled.button`
 const Comments = ({ videoId }) => {
   const { currentUser } = useSelector((state) => state.user);
   const { currentVideo } = useSelector((state) => state.video);
+  const { currentComment } = useSelector((state) => state.comment);
+
   const dispatch = useDispatch();
   const textRef = useRef();
 
@@ -49,59 +54,61 @@ const Comments = ({ videoId }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await axios.get(`/comments/${videoId}`);
+        const res = await axiosInstance.get(`/comments/${videoId}`);
         setComments(res.data);
-        dispatch(fetchCommentSuccess(res.data));
       } catch (err) {}
     };
     fetchComments();
-  }, [videoId, dispatch]);
+  }, [videoId, currentComment]);
 
   const addComment = async (e) => {
+    dispatch(fetchCommentStart());
     e.preventDefault();
     const newComment = textRef.current.value;
     console.log("ok");
     try {
-      await axios.post("/comments", {
+      const res = await axiosInstance.post("/comments", {
         desc: newComment,
         userId: currentUser._id,
         videoId: currentVideo._id,
       });
       textRef.current.value = "";
       setInput("");
+      dispatch(fetchCommentSuccess(res.data));
     } catch (error) {
-      console.log(error);
-      throw error;
+      dispatch(fetchCommentFailure());
     }
   };
-  console.log(input);
+
   return (
     <Container>
-      <NewComment>
-        <Avatar src={currentUser?.img} alt="avatar img" />
-        <Input
-          placeholder="Add a comment..."
-          ref={textRef}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        {input.length > 0 ? (
-          <Boutton
-            onClick={addComment}
-            type="submit"
-            style={{ backgroundColor: "#6DBCFF", color: "black" }}
-          >
-            Add a comment
-          </Boutton>
-        ) : (
-          <Boutton
-            onClick={addComment}
-            type="submit"
-            style={{ backgroundColor: "#303030", color: "#717171" }}
-          >
-            Add a comment
-          </Boutton>
-        )}
-      </NewComment>
+      {currentUser && (
+        <NewComment>
+          <Avatar src={currentUser?.img} alt="avatar img" />
+          <Input
+            placeholder="Add a comment..."
+            ref={textRef}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          {input.length > 0 ? (
+            <Boutton
+              onClick={addComment}
+              type="submit"
+              style={{ backgroundColor: "#6DBCFF", color: "black" }}
+            >
+              Add a comment
+            </Boutton>
+          ) : (
+            <Boutton
+              onClick={addComment}
+              type="submit"
+              style={{ backgroundColor: "#303030", color: "#717171" }}
+            >
+              Add a comment
+            </Boutton>
+          )}
+        </NewComment>
+      )}
       {comments.map((comment) => (
         <Comment key={comment?._id} comment={comment} />
       ))}

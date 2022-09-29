@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import {
   loginFailure,
@@ -13,6 +12,8 @@ import {
 import { auth, provider } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { signInWithPopup } from "firebase/auth";
+import validator from "validator";
+import { axiosInstance } from "../config";
 
 const Container = styled.div`
   display: flex;
@@ -79,6 +80,7 @@ const Link = styled.span`
 const SignIn = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -87,7 +89,7 @@ const SignIn = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      const res = await axios.post("/auth/signin", { name, password });
+      const res = await axiosInstance.post("/auth/signin", { name, password });
       dispatch(loginSuccess(res.data));
       navigate("/");
     } catch (err) {
@@ -99,7 +101,7 @@ const SignIn = () => {
     dispatch(loginStart());
     signInWithPopup(auth, provider)
       .then((result) => {
-        axios
+        axiosInstance
           .post("/auth/google", {
             name: result.user.displayName,
             email: result.user.email,
@@ -119,11 +121,25 @@ const SignIn = () => {
     e.preventDefault();
     dispatch(signUpStart());
     try {
-      const res = await axios.post("/auth/signup", { name, email, password });
+      const res = await axiosInstance.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
       dispatch(signUpSuccess(res.data));
       navigate("/");
     } catch (err) {
       dispatch(signUpFailure());
+    }
+  };
+
+  const validateEmail = (e) => {
+    var email = e.target.value;
+    if (validator.isEmail(email)) {
+      setEmailError("Valid Email");
+      setEmail(email);
+    } else {
+      setEmailError("Enter valid Email!");
     }
   };
 
@@ -154,8 +170,13 @@ const SignIn = () => {
         <Input
           type="email"
           placeholder="email"
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => validateEmail(e)}
         />
+        <span
+          style={{
+            color: "red",
+          }}
+        ></span>
         <Input
           type="password"
           placeholder="password"

@@ -10,6 +10,8 @@ import SignIn from "./pages/SignIn";
 import Search from "./pages/Search";
 import { useSelector } from "react-redux";
 import Tags from "./pages/Tags";
+import Settings from "./pages/Settings";
+import Help from "./pages/Help";
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +22,7 @@ const Main = styled.div`
   background-color: ${({ theme }) => theme.bg};
 `;
 const Wrapper = styled.div`
-  padding: 22px 35px;
+padding: 20px 15px;
 `;
 
 function App() {
@@ -42,6 +44,8 @@ function App() {
                   <Route path="subscriptions" element={<Home type="sub" />} />
                   <Route path="search" element={<Search />} />
                   <Route path="tags" element={<Tags />} />
+                  <Route path="settings" element={currentUser ? <Settings /> : <SignIn />} />
+                  <Route path="help" element={<Help />} />
                   <Route
                     path="signin"
                     element={currentUser ? <Home /> : <SignIn />}
@@ -49,7 +53,6 @@ function App() {
                   <Route path="video">
                     <Route path=":id" element={<Video />} />
                   </Route>
-
                 </Route>
               </Routes>
             </Wrapper>
