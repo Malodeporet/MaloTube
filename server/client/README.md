@@ -1,3 +1,13 @@
+# About MaloTube
+
+Clone of the Youtube Application from scratch. I
+used React/Redux, Node.js / Express and a database in MongoDb. This
+project allowed me to use React hooks, Redux Dev Toolkits, JWT
+Authentication, Firebase for GoogleAuth, Upload files.
+
+Feel free to create an account or log in with a google account and
+upload your own videos ...... Have fun !
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
